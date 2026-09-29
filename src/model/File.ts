@@ -5,7 +5,7 @@ interface IFile {
   originalName: string;
   orderId: ObjectId;
   uploadedBy: ObjectId;
-  fileUrl: string;
+  storageKey: string;
   fileType: string;
   fileSize: number;
   pages: number;
@@ -28,7 +28,7 @@ const fileSchema = new Schema<IFile>(
       ref: "User",
     },
 
-    fileUrl: {
+    storageKey: {
       type: String,
       required: true,
     },

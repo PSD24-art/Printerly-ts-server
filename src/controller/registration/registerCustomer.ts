@@ -2,12 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import { User } from "../../model/User.js";
 import { AppError } from "../../utils/globalErrorHandler.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { dot } from "node:test/reporters";
 import createJwt from "../../utils/createJwt.js";
 
-dotenv.config();
 interface RegisterInterface {
   name?: string;
   email?: string;
@@ -15,15 +11,12 @@ interface RegisterInterface {
   password?: string;
 }
 
-const createRegisterHandler = (role: "customer" | "shopkeeper" | "admin") => {
+const createRegisterHandler = (role: "customer" | "admin") => {
   return async (req: Request<{}, {}, RegisterInterface>, res: Response) => {
     const { name, email, password, mobile } = req.body;
 
     if (!name || !password || !mobile || !email) {
-      throw new AppError(
-        "All fields (name, email, mobile, password) are mandatory",
-        400,
-      );
+      throw new AppError("All fields (name, email, mobile, password) are mandatory", 400);
     }
 
     const userExists = await User.findOne({ email });
@@ -68,5 +61,4 @@ const createRegisterHandler = (role: "customer" | "shopkeeper" | "admin") => {
 };
 
 export const registerCustomer = createRegisterHandler("customer");
-export const registerShopkeeper = createRegisterHandler("shopkeeper");
 export const registerAdmin = createRegisterHandler("admin");

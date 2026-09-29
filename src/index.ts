@@ -1,13 +1,7 @@
 //External modules
-import express, {
-  type ErrorRequestHandler,
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import express, { type ErrorRequestHandler, type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 //Internal Modules
 import mainRouter from "./routes/mainRouter.js";
@@ -16,7 +10,6 @@ import { authMiddleware } from "./middleware/authMiddleware.js";
 import asyncHandler from "./utils/asyncHandler.js";
 
 //basic config
-dotenv.config();
 const app = express();
 
 //middlewares
@@ -58,7 +51,6 @@ app.get(
   "/api/auth/me",
   authMiddleware,
   asyncHandler((req: Request, res: Response) => {
-    console.log("authenticated user");
     res.json({ success: true, user: req.user });
   }),
 );

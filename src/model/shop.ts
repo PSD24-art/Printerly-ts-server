@@ -1,27 +1,26 @@
 // models/shop.model.js
 
-import { model, Schema, type ObjectId } from "mongoose";
-
-const mongoose = require("mongoose");
+import { model, Schema, Types, type ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 // interface location
 interface IShop {
-  ownerId: ObjectId;
-  shopId: ObjectId;
+  shopName: string;
+  ownerId: Types.ObjectId;
   address: string;
   location: {
     type: "Point";
     coordinates: number[];
   };
-  locationUrl: string;
   openingHours: string;
-  services: string[];
+  locationUrl: string;
   pricing: {
     blackAndWhite: number;
     colorPrint: number;
     lamination: number;
     binding: number;
   };
+  services?: string[];
   rating?: number;
   isActive: boolean;
   documents?: string[];
@@ -29,16 +28,14 @@ interface IShop {
 
 const shopSchema = new Schema<IShop>(
   {
+    shopName: {
+      type: String,
+      required: true,
+    },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-
-    shopId: {
-      type: String,
-      required: true,
-      trim: true,
     },
 
     address: {
@@ -54,12 +51,12 @@ const shopSchema = new Schema<IShop>(
       },
 
       coordinates: {
-        type: [Number],
+        type: [Number, Number],
         required: true,
       },
     },
+    locationUrl: { type: String, required: true },
 
-    locationUrl: String,
     openingHours: {
       type: String,
     },
@@ -67,6 +64,7 @@ const shopSchema = new Schema<IShop>(
     services: [
       {
         type: String,
+        default: "Printing",
       },
     ],
 
@@ -101,4 +99,4 @@ const shopSchema = new Schema<IShop>(
 shopSchema.index({ location: "2dsphere" });
 
 const Shop = model<IShop>("Shop", shopSchema);
-module.exports = Shop;
+export default Shop;
