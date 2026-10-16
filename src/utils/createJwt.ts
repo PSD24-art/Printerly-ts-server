@@ -17,9 +17,7 @@ export default function createJwt(tokenPayload: TokenPayload) {
   let jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
-    console.error(
-      "CRITICAL CONFIG ERROR: JWT_SECRET environment variable is missing.",
-    );
+    console.error("CRITICAL CONFIG ERROR: JWT_SECRET environment variable is missing.");
     throw new AppError("Internal server configuration error", 500);
   }
 
@@ -28,7 +26,6 @@ export default function createJwt(tokenPayload: TokenPayload) {
     console.log("Unable to sign token");
     throw new AppError("Unable to sign token", 500);
   }
-  console.log("Generated jwt: ", token);
 
   return token;
 }

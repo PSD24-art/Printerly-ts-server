@@ -3,7 +3,7 @@ import { AppError } from "../../utils/globalErrorHandler.js";
 import { User } from "../../model/User.js";
 import bcrypt from "bcryptjs";
 import createJwt from "../../utils/createJwt.js";
-import Shop from "../../model/shop.js";
+import Shop from "../../model/Shop.js";
 
 interface RegisterInterface {
   name?: string;

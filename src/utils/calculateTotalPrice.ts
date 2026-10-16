@@ -15,8 +15,9 @@ export interface ShopPricing {
 }
 function calculatePrice(totalPages: number, config: PrintConfig, pricing: ShopPricing) {
   const printRate = config.colorMode === "color" ? pricing.colorPrint : pricing.blackAndWhite;
+  const printableSheets = config.printSide === "double" ? Math.ceil(totalPages / 2) : totalPages;
 
-  const printingCost = totalPages * printRate * config.copies;
+  const printingCost = printableSheets * printRate * config.copies;
 
   const bindingCost = config.binding ? pricing.binding : 0;
 

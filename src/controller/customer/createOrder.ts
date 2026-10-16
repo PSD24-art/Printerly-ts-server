@@ -1,12 +1,13 @@
 import type { Request, Response } from "express";
 import { AppError } from "../../utils/globalErrorHandler.js";
-import Shop from "../../model/shop.js";
+import Shop from "../../model/Shop.js";
 import { countPages, type PageCountResult } from "../../utils/countPdfPages.js";
 import calculatePrice, { type PrintConfig } from "../../utils/calculateTotalPrice.js";
 import Order from "../../model/Order.js";
 import mongoose, { Schema, Types, type ObjectId } from "mongoose";
 import { uploadFileToS3 } from "../../services/s3.services.js";
-import { File } from "../../model/File.js";
+import File from "../../model/File.js";
+import type { Server } from "socket.io";
 
 export const createOrder = async (req: Request, res: Response) => {
   const { shopId } = req.body;
@@ -105,7 +106,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
     customer: customerId,
 
-    shopId,
+    shop: shopId,
 
     files: fileIds,
 
@@ -137,7 +138,16 @@ export const createOrder = async (req: Request, res: Response) => {
   if (!order) {
     throw new AppError("Unable create order", 500);
   }
+  const io = req.app.get("io") as Server | undefined;
 
+  if (io) {
+    io.to(`shop:${shop._id.toString()}`).emit("new-order", {
+      orderId: order._id.toString(),
+      shopId: shop._id.toString(),
+    });
+  } else {
+    console.error("Socket.IO server is not available");
+  }
   return res.status(201).json({
     success: true,
     message: "Order created successfully",

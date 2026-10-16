@@ -1,17 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
-import { User } from "../../model/User.js";
-import { AppError } from "../../utils/globalErrorHandler.js";
 import bcrypt from "bcryptjs";
+import { AppError } from "../../utils/globalErrorHandler.js";
+import { User } from "../../model/User.js";
 import createJwt from "../../utils/createJwt.js";
 interface LoginBody {
   email?: string;
   password?: string;
 }
-export const loginHandler = async (
-  req: Request<{}, {}, LoginBody>,
-  res: Response,
-  next: NextFunction,
-) => {
+export const loginHandler = async (req: Request<{}, {}, LoginBody>, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -20,10 +16,7 @@ export const loginHandler = async (
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new AppError(
-      "No user found, check your credentials and try again",
-      404,
-    );
+    throw new AppError("No user found, check your credentials and try again", 404);
   }
 
   const isSame = bcrypt.compare(password, user.password);
@@ -52,4 +45,14 @@ export const loginHandler = async (
     success: true,
     message: `${user.role.charAt(0).toUpperCase() + user.role.slice(1)} logged in successfully!`,
   });
+};
+
+export const logoutHandler = async (req: Request<{}, {}, LoginBody>, res: Response, next: NextFunction) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
 };

@@ -1,10 +1,10 @@
-import { model } from "mongoose";
+import { model, Types } from "mongoose";
 import { Schema, type ObjectId } from "mongoose";
 
 interface IFile {
   originalName: string;
-  orderId: ObjectId;
-  uploadedBy: ObjectId;
+  orderId: Types.ObjectId;
+  uploadedBy: Types.ObjectId;
   storageKey: string;
   fileType: string;
   fileSize: number;
@@ -50,4 +50,5 @@ const fileSchema = new Schema<IFile>(
   },
 );
 
-export const File = model<IFile>("File", fileSchema);
+const File = model<IFile>("File", fileSchema);
+export default File;

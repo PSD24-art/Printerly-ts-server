@@ -24,16 +24,16 @@ interface PrintSettings {
 
 interface IOrder {
   customer: Types.ObjectId;
-  shopId: ObjectId;
+  shop: Types.ObjectId;
   files: Types.ObjectId[];
   placedAt: Date;
   status: status;
   printSettings: PrintSettings;
-  totalPages: number;
   totalPrice: number;
   paymentStatus: paymentStatus;
   deliveryType: deliveryType;
-  notes: string;
+  notes?: string;
+  otp?: number;
 }
 
 const orderSchema = new Schema<IOrder>(
@@ -44,7 +44,7 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
 
-    shopId: {
+    shop: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
       required: true,
@@ -60,7 +60,7 @@ const orderSchema = new Schema<IOrder>(
 
     status: {
       type: String,
-      enum: ["Pending", "Accepted", "Printing", "Completed", "Rejected", "Cancelled"],
+      enum: ["Pending", "Accepted", "Completed", "Rejected", "Cancelled"],
       default: "Pending",
     },
 
@@ -103,8 +103,6 @@ const orderSchema = new Schema<IOrder>(
       },
     },
 
-    totalPages: Number,
-
     totalPrice: {
       type: Number,
       required: true,
@@ -125,13 +123,15 @@ const orderSchema = new Schema<IOrder>(
     notes: {
       type: String,
     },
+
+    otp: Number,
   },
   {
     timestamps: true,
   },
 );
 
-orderSchema.index({ shopId: 1, customer: 1 });
+orderSchema.index({ shop: 1, customer: 1 });
 
 const Order = model<IOrder>("Order", orderSchema);
 export default Order;

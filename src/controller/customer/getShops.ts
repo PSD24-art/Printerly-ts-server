@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import Shop from "../../model/shop.js";
+import Shop from "../../model/Shop.js";
 import { AppError } from "../../utils/globalErrorHandler.js";
 
 export const getShopsNearby = async (req: Request, res: Response) => {
@@ -32,6 +32,7 @@ export const getShopsNearby = async (req: Request, res: Response) => {
 };
 
 export const getOneShop = async (req: Request, res: Response) => {
+  console.log("Route hit");
   const { id } = req.params;
 
   if (!id) {
