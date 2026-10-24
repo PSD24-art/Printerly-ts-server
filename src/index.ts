@@ -19,13 +19,14 @@ const httpServer = createServer(app);
 //connecting socket.io to the server
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
 //socket authMiddleware
+
 io.use(socketAuthMiddleware);
 //logging
 app.set("io", io);
@@ -99,7 +100,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 //Start app
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
