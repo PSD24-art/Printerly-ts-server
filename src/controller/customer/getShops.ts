@@ -9,19 +9,20 @@ export const getShopsNearby = async (req: Request, res: Response) => {
   if (!longitude || !latitude) {
     throw new AppError("No location recieved", 404);
   }
-  const geoQuery: any = {
-    type: "Point",
-    coordinates: [parseFloat(longitude), parseFloat(latitude)],
-  };
+  // const geoQuery: any = {
+  //   type: "Point",
+  //   coordinates: [parseFloat(longitude), parseFloat(latitude)],
+  // };
 
-  const shops = await Shop.find({
-    location: {
-      $near: {
-        $geometry: geoQuery,
-        $maxDistance: 10000,
-      },
-    },
-  });
+  // const shops = await Shop.find({
+  //   location: {
+  //     $near: {
+  //       $geometry: geoQuery,
+  //       $maxDistance: 10000,
+  //     },
+  //   },
+  // });
+  const shops = await Shop.find();
 
   return res.status(200).json({
     success: true,
