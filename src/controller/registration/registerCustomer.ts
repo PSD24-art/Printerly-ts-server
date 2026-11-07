@@ -33,11 +33,12 @@ const createRegisterHandler = (role: "customer" | "admin") => {
       mobile,
       role,
     });
-
+    console.log("User created: ", user);
     if (!user) {
       throw new AppError("Unable to register", 500);
     }
-
+    const userObj = user.toObject();
+    const { password: _, ...userWithoutPassword } = userObj;
     const tokenPayload = {
       id: user._id,
       email: user.email,
@@ -48,7 +49,7 @@ const createRegisterHandler = (role: "customer" | "admin") => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production" ? true : false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -56,6 +57,7 @@ const createRegisterHandler = (role: "customer" | "admin") => {
     res.status(200).json({
       success: true,
       message: `${role.charAt(0).toUpperCase() + role.slice(1)} registered successfully!`,
+      user: userWithoutPassword,
     });
   };
 };

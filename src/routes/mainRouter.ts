@@ -14,7 +14,7 @@ router.use("/auth", authRouter);
 router.use("/register", registerRouter);
 
 //Customer
-router.use("/customer", authMiddleware, authorizeRoles("customer"), customerRouter);
+router.use("/customer", customerRouter);
 
 //shopkeeper
 router.use("/shopkeeper", authMiddleware, authorizeRoles("shopkeeper"), shopkeeperRouter);

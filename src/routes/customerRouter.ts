@@ -4,6 +4,8 @@ import { getOneShop, getShopsNearby } from "../controller/customer/getShops.js";
 import upload from "../middleware/multer.js";
 import createOrder from "../controller/customer/createOrder.js";
 import { getOrdersById } from "../controller/customer/getAllOrders.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
 const router = express.Router();
 
@@ -17,6 +19,12 @@ router.get("/shop/:id", asyncHandler(getOneShop));
 router.get("/orders/:customerId", asyncHandler(getOrdersById));
 
 //place order
-router.post("/order", upload.array("documents", 10), asyncHandler(createOrder));
+router.post(
+  "/order",
+  authMiddleware,
+  authorizeRoles("customer"),
+  upload.array("documents", 10),
+  asyncHandler(createOrder),
+);
 
 export default router;
